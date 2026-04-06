@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FF Player Info | @sulav_codex_ff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="bg-particles">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="app">
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon">FF</div>
+        <div>
+          <div class="logo-title">PLAYER INFO</div>
+          <div class="logo-sub">Free Fire Account Lookup Tool</div>
+        </div>
+      </div>
+      <div class="header-credits">
+        <div class="credit-row"><span class="credit-lbl">DEVELOPER</span><a href="https://t.me/sulav_codex_ff" target="_blank">@sulav_codex_ff</a></div>
+        <div class="credit-row"><span class="credit-lbl">CHANNEL</span><a href="https://t.me/sulav_don2" target="_blank" class="blue">@sulav_don2</a></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- AUTHORISE CARD -->
+    <div class="card" id="authCard">
+      <div class="card-head">
+        <div class="step-badge">🔐</div>
+        <h2>Authorise Account</h2>
+        <div id="authStatusDot" class="status-dot idle"></div>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="atab active" data-tab="jwt"     onclick="switchTab('jwt')">JWT</button>
+        <button class="atab"        data-tab="uidpass" onclick="switchTab('uidpass')">UID / Pass</button>
+        <button class="atab"        data-tab="token"   onclick="switchTab('token')">Access Token</button>
+      </div>
+
+      <div id="atab-jwt" class="atab-pane active">
+        <div class="field-group">
+          <label>JWT Token</label>
+          <input id="inp-jwt" type="text" class="inp" placeholder="Paste your JWT token..."/>
+        </div>
+      </div>
+      <div id="atab-uidpass" class="atab-pane">
+        <div class="field-group">
+          <label>Player UID</label>
+          <input id="inp-uid" type="text" class="inp" placeholder="Enter UID..."/>
+        </div>
+        <div class="field-group">
+          <label>Password</label>
+          <input id="inp-pass" type="password" class="inp" placeholder="Enter password..."/>
+        </div>
+      </div>
+      <div id="atab-token" class="atab-pane">
+        <div class="field-group">
+          <label>Access Token</label>
+          <input id="inp-token" type="text" class="inp" placeholder="Paste access token..."/>
+        </div>
+      </div>
+
+      <button class="btn-auth" id="authBtn" onclick="doAuthorise()">
+        🔐 &nbsp;Authorise
+      </button>
+
+      <div id="authLoader" class="loader-row hidden">
+        <div class="spinner"></div>
+        <span>Verifying credentials &amp; fetching player data...</span>
+      </div>
+
+      <div id="errorBox" class="error-box hidden"></div>
+    </div>
+
+    <!-- INFO CARD -->
+    <div class="card info-card hidden" id="infoCard">
+      <div class="card-head">
+        <div class="step-badge green-badge">📋</div>
+        <h2>Player Info</h2>
+        <div class="live-pill">LIVE</div>
+      </div>
+
+      <!-- Top profile banner -->
+      <div class="profile-banner">
+        <div class="profile-avatar" id="pAvatar">?</div>
+        <div class="profile-banner-text">
+          <div class="profile-name"  id="pName">—</div>
+          <div class="profile-uid"   id="pUID">UID: —</div>
+          <div class="profile-region" id="pRegion">🌏 —</div>
+        </div>
+        <div class="active-badge">✅ ACTIVE</div>
+      </div>
+
+      <!-- Main 5 fields -->
+      <div class="info-grid" id="mainGrid">
+        <div class="info-cell">
+          <div class="info-lbl">Nickname</div>
+          <div class="info-val white-val"  id="iNickname">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">ACCOUNT UID</div>
+          <div class="info-val cyan-val"   id="iUID">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">Player LIKE</div>
+          <div class="info-val gold-val"   id="iLikes">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">REGION</div>
+          <div class="info-val blue-val"   id="iRegion">—</div>
+        </div>
+        <div class="info-cell wide">
+          <div class="info-lbl">LEVEL</div>
+          <div class="info-val level-val"  id="iLevel">—</div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider">More Details</div>
+
+      <!-- Extra fields grid -->
+      <div class="info-grid" id="extraGrid">
+        <div class="info-cell">
+          <div class="info-lbl">EXP</div>
+          <div class="info-val" id="iExp">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">BR Rank</div>
+          <div class="info-val gold-val" id="iBRRank">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">CS Rank</div>
+          <div class="info-val gold-val" id="iCSRank">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">Credit Score</div>
+          <div class="info-val green-val" id="iCredit">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">Language</div>
+          <div class="info-val" id="iLang">—</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-lbl">Season</div>
+          <div class="info-val" id="iSeason">—</div>
+        </div>
+        <div class="info-cell wide">
+          <div class="info-lbl">Battle Tags</div>
+          <div class="info-val" id="iBattleTags">—</div>
+        </div>
+        <div class="info-cell wide" id="clanCell">
+          <div class="info-lbl">Clan</div>
+          <div class="info-val" id="iClan">—</div>
+        </div>
+      </div>
+
+      <button class="btn-reset" onclick="resetCard()">🔄 Re-Authorise</button>
+    </div>
+
+    <!-- API DOCS CARD -->
+    <div class="card docs-card">
+      <div class="card-head">
+        <div class="step-badge">📡</div>
+        <h2>API Reference</h2>
+      </div>
+      <div class="endpoint-row">
+        <span class="ep-badge">GET / POST</span>
+        <code>/authorise</code>
+      </div>
+      <div class="ep-desc">Validates credentials and returns full player profile from <code>uid</code> + <code>region</code>.</div>
+
+      <div class="two-col-docs">
+        <div>
+          <div class="docs-section-title">Parameters</div>
+          <div class="param-list">
+            <div class="param-row"><code>jwt</code><span>Direct JWT token</span></div>
+            <div class="param-row"><code>uid</code> + <code>pass</code><span>UID &amp; password</span></div>
+            <div class="param-row"><code>access_token</code><span>Garena access token</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="docs-section-title">Response Fields</div>
+          <div class="param-list">
+            <div class="param-row"><code>Nickname</code><span>Player name</span></div>
+            <div class="param-row"><code>ACCOUNT UID</code><span>Unique account ID</span></div>
+            <div class="param-row"><code>Player LIKE</code><span>Ranking points</span></div>
+            <div class="param-row"><code>REGION</code><span>Server region</span></div>
+            <div class="param-row"><code>LEVEL</code><span>Player level</span></div>
+            <div class="param-row"><code>EXP</code><span>Total experience</span></div>
+            <div class="param-row"><code>BR Rank</code><span>Battle Royale rank</span></div>
+            <div class="param-row"><code>CS Rank</code><span>Clash Squad rank</span></div>
+            <div class="param-row"><code>Credit Score</code><span>Behaviour score</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <footer class="footer">
+    <a href="https://t.me/sulav_codex_ff" target="_blank">@sulav_codex_ff</a>
+    <span>·</span>
+    <a href="https://t.me/sulav_don2" target="_blank">@sulav_don2</a>
+    <span>·</span>
+    <span>FF Player Info © 2024</span>
+  </footer>
+
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
